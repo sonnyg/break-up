@@ -1,0 +1,19 @@
+.panel {
+  /*margin: 0 auto;*/
+  padding: 8px;
+  /*align-self: center;*/
+  border-radius: 8px;
+  /*overflow: hidden;*/
+}
+
+.center-text {
+  text-align: center;
+}
+
+.border-dark {
+  border: solid 2px black;
+}
+
+.border-light {
+  border: solid 2px #e7e7e7;
+}
