@@ -17,11 +17,9 @@ window.onload = function onLoad() {
     const paddle = createPaddle(gameBoard);
     const game = createGame(gameBoard, paddle);
 
-    // move paddle to bottom, center of gameBoard
-    const paddleX = gameBoard.width / 2 - paddle.width / 2;
-    const paddleY = gameBoard.height - paddle.height - 2; // small bottom gap
+    const paddleController = createPaddleController(paddle, gameBoard);
 
-    paddle.moveTo(paddleX, paddleY);
+    paddleController.resetPaddle();
 
     drawGame(context, game);
 
@@ -40,7 +38,7 @@ window.onload = function onLoad() {
 
       // log(`mouseX: ${mouseX}, canvasX: ${canvasX}`);
       // now update the paddle
-      paddle.moveTo(canvasX, paddle.y);
+      paddleController.movePaddle(canvasX);
 
       // redraw the paddle to see it's new position
       drawGame(context, game);
@@ -107,4 +105,34 @@ function createPaddle(gameBoard) {
       this.y = dy;
     }
   };
+}
+
+function createPaddleController(paddle, gameBoard) {
+  return {
+    paddle: paddle,
+    board: gameBoard,
+    resetPaddle : function resetPaddle() {
+      const paddle = this.paddle;
+      const board = this.board;
+
+      // move paddle to bottom, center of gameBoard
+      const paddleX = board.width / 2 - paddle.width / 2;
+      const paddleY = board.height - paddle.height - 2; // small bottom gap
+
+      paddle.moveTo(paddleX, paddleY);
+    },
+    movePaddle : function movePaddle(dx) {
+      const paddle = this.paddle;
+      const board = this.board;
+
+      // move the paddle if it fits on the game board
+      if (dx < 0) {
+        paddle.moveTo(0, paddle.y);
+      } else if (dx + paddle.width > board.width) {
+        paddle.moveTo(board.width - paddle.width, paddle.y);
+      } else {
+        paddle.moveTo(dx, paddle.y);
+      }
+    }
+  }
 }
