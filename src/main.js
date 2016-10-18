@@ -15,6 +15,7 @@ window.onload = function onLoad() {
 
     const gameBoard = createGameBoard(size);
     const paddle = createPaddle(gameBoard);
+    const game = createGame(gameBoard, paddle);
 
     // move paddle to bottom, center of gameBoard
     const paddleX = gameBoard.width / 2 - paddle.width / 2;
@@ -22,8 +23,7 @@ window.onload = function onLoad() {
 
     paddle.moveTo(paddleX, paddleY);
 
-    drawGameBoard(context, gameBoard);
-    drawPaddle(context, paddle);
+    drawGame(context, game);
 
     // listen for mouse events on the document
     document.onmousemove = function onMouseMove(event) {
@@ -43,12 +43,23 @@ window.onload = function onLoad() {
       paddle.moveTo(canvasX, paddle.y);
 
       // redraw the paddle to see it's new position
-      drawPaddle(context, paddle);
+      drawGame(context, game);
     }
 }
 
 function log(message) {
   console.log(message);
+}
+
+function drawGame(context, game) {
+  context.save();
+
+  context.clearRect(0, 0, game.board.width, game.board.height);
+
+  drawGameBoard(context, game.board);
+  drawPaddle(context, game.paddle);
+
+  context.restore();
 }
 
 function drawGameBoard(context, gameBoard) {
@@ -67,6 +78,13 @@ function drawPaddle(context, paddle) {
     context.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
 
     context.restore();
+}
+
+function createGame(gameBoard, paddle) {
+  return {
+    board: gameBoard,
+    paddle: paddle
+  };
 }
 
 function createGameBoard(size) {
