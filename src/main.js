@@ -19,9 +19,21 @@ window.onload = function onLoad() {
 
     const paddleController = createPaddleController(paddle, gameBoard);
 
-    paddleController.resetPaddle();
+    startGame();
 
-    drawGame(context, game);
+    function startGame() {
+      paddleController.resetPaddle();
+
+      drawFrame();
+    }
+
+    function drawFrame(timestamp) {
+        if (game.active) {
+          drawGame(context, game);
+
+          window.requestAnimationFrame(drawFrame);
+        }
+    }
 
     // listen for mouse events on the document
     document.onmousemove = function onMouseMove(event) {
@@ -39,9 +51,6 @@ window.onload = function onLoad() {
       // log(`mouseX: ${mouseX}, canvasX: ${canvasX}`);
       // now update the paddle
       paddleController.movePaddle(canvasX);
-
-      // redraw the paddle to see it's new position
-      drawGame(context, game);
     }
 }
 
@@ -80,6 +89,7 @@ function drawPaddle(context, paddle) {
 
 function createGame(gameBoard, paddle) {
   return {
+    active: true,
     board: gameBoard,
     paddle: paddle
   };
