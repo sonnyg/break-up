@@ -15,7 +15,9 @@ window.onload = function onLoad() {
 
     const gameBoard = createGameBoard(size);
     const paddle = createPaddle(gameBoard);
-    const game = createGame(gameBoard, paddle);
+    const ball = createBall();
+
+    const game = createGame(gameBoard, paddle, ball);
 
     const paddleController = createPaddleController(paddle, gameBoard);
 
@@ -65,6 +67,7 @@ function drawGame(context, game) {
 
   drawGameBoard(context, game.board);
   drawPaddle(context, game.paddle);
+  drawBall(context, game.ball);
 
   context.restore();
 }
@@ -87,11 +90,25 @@ function drawPaddle(context, paddle) {
     context.restore();
 }
 
-function createGame(gameBoard, paddle) {
+function drawBall(context, ball) {
+  context.save();
+
+  context.beginPath();
+  context.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI, false);
+  context.closePath();
+
+  context.fillStyle = ball.color;
+  context.fill();
+
+  context.restore();
+}
+
+function createGame(gameBoard, paddle, ball) {
   return {
     active: true,
     board: gameBoard,
-    paddle: paddle
+    paddle: paddle,
+    ball: ball
   };
 }
 
@@ -114,6 +131,15 @@ function createPaddle(gameBoard) {
       this.x = dx;
       this.y = dy;
     }
+  };
+}
+
+function createBall() {
+  return {
+    x: 0,
+    y: 0,
+    radius: 20,
+    color: "red"
   };
 }
 
