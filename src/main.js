@@ -20,7 +20,7 @@ window.onload = function onLoad() {
     const game = createGame(gameBoard, paddle, ball);
 
     const paddleController = createPaddleController(paddle, gameBoard);
-    const ballController = createBallController(ball, gameBoard);
+    const ballController = createBallController(ball, paddle, gameBoard);
 
     startGame();
 
@@ -180,9 +180,10 @@ function createPaddleController(paddle, gameBoard) {
   }
 }
 
-function createBallController(ball, gameBoard) {
+function createBallController(ball, paddle, gameBoard) {
   return {
     ball: ball,
+    paddle: paddle,
     board: gameBoard,
     velocityX : 2,
     velocityY : 2,
@@ -199,8 +200,11 @@ function createBallController(ball, gameBoard) {
     moveBall : function moveBall() {
       const ball = this.ball;
       const board = this.board;
+      const paddle = this.paddle;
 
-      // keep ball inside the game board
+      const ballAbovePaddle = ball.x > paddle.x && ball.x < (paddle.x + paddle.width);
+      const ballAtPaddleHeight = (ball.y + ball.radius) >= paddle.y;
+
       if ((ball.x - ball.radius) <= 0) {                    // left side
         this.velocityX = -this.velocityX;
       } else if ((ball.x + ball.radius) >= board.width) {   // right side
@@ -209,6 +213,9 @@ function createBallController(ball, gameBoard) {
         this.velocityY = -this.velocityY;
       } else if ((ball.y + ball.radius) >= board.height) {  // bottom side
         console.trace("uh-oh! ball hit bottom of board");
+        this.velocityY = -this.velocityY;
+      } else if (ballAbovePaddle && ballAtPaddleHeight) {   // ball hit paddle
+        console.trace("ball saved!");
         this.velocityY = -this.velocityY;
       }
 
