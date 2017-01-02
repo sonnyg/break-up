@@ -20,11 +20,13 @@ window.onload = function onLoad() {
     const game = createGame(gameBoard, paddle, ball);
 
     const paddleController = createPaddleController(paddle, gameBoard);
+    const ballController = createBallController(ball, gameBoard);
 
     startGame();
 
     function startGame() {
       paddleController.resetPaddle();
+      ballController.resetBall();
 
       drawFrame();
     }
@@ -33,6 +35,7 @@ window.onload = function onLoad() {
         if (game.active) {
           drawGame(context, game);
 
+          // ballController.moveBall();
           window.requestAnimationFrame(drawFrame);
         }
     }
@@ -139,7 +142,11 @@ function createBall() {
     x: 0,
     y: 0,
     radius: 20,
-    color: "red"
+    color: "red",
+    moveTo : function moveTo(dx, dy) {
+      this.x = dx;
+      this.y = dy;
+    }
   };
 }
 
@@ -172,3 +179,64 @@ function createPaddleController(paddle, gameBoard) {
     }
   }
 }
+
+function createBallController(ball, gameBoard) {
+  return {
+    ball: ball,
+    board: gameBoard,
+    velocityX : 2,
+    velocityY : 2,
+    resetBall : function resetBall() {
+      const ball = this.ball;
+      const board = this.board;
+
+      // move ball to center of board
+      const ballX = board.width / 2 - ball.x;
+      const ballY = board.height / 2 - ball.y;
+
+      ball.moveTo(ballX, ballY);
+    },
+    moveBall : function moveBall() {
+      const ball = this.ball;
+      const board = this.board;
+
+      ball.moveTo(ball.x + this.velocityX, ball.y + this.velocityY);
+    }
+  }
+}
+
+/*
+,
+moveTo : function moveTo(dx, dy) {
+  this.x = dx;
+  this.y = dy;
+}
+
+color: "0095DD",
+font: "16px Arial",
+score: 0,
+lives: 3
+
+drawScore(context, game);
+drawLives(context, game);
+
+function drawScore(context, game) {
+  context.save();
+
+  context.font = game.font;
+  context.fillStyle = game.color;
+  context.fillText(`Score: ${game.score}`, 8, 20);
+
+  context.restore();
+}
+
+function drawLives(context, game) {
+  context.save();
+
+  context.font = game.font;
+  context.fillStyle = game.color;
+  context.fillText(`Lives: ${game.lives}`, game.board.width - 65, 20);
+
+  context.restore();
+}
+*/
