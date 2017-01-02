@@ -23,3 +23,4 @@ I am creating tags for each lesson. checking out the code using the below tags w
 - **lesson 6** (tag: 6-animation-loop) :: Finally add the game animation loop.
 - **lesson 7** (tag: 7-game-ball) :: Create the game ball, more about passing objects.
 - **lesson 8** (tag: 8-ball-controller) :: Adding automated controller for ball.
+- **lesson 9** (tag: 9-board-collision) :: Discuss environment (ball and board) collision.

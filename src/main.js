@@ -35,7 +35,7 @@ window.onload = function onLoad() {
         if (game.active) {
           drawGame(context, game);
 
-          // ballController.moveBall();
+          ballController.moveBall();
           window.requestAnimationFrame(drawFrame);
         }
     }
@@ -199,6 +199,18 @@ function createBallController(ball, gameBoard) {
     moveBall : function moveBall() {
       const ball = this.ball;
       const board = this.board;
+
+      // keep ball inside the game board
+      if ((ball.x - ball.radius) <= 0) {                    // left side
+        this.velocityX = -this.velocityX;
+      } else if ((ball.x + ball.radius) >= board.width) {   // right side
+        this.velocityX = -this.velocityX;
+      } else if ((ball.y - ball.radius) <= 0) {             // top side
+        this.velocityY = -this.velocityY;
+      } else if ((ball.y + ball.radius) >= board.height) {  // bottom side
+        console.trace("uh-oh! ball hit bottom of board");
+        this.velocityY = -this.velocityY;
+      }
 
       ball.moveTo(ball.x + this.velocityX, ball.y + this.velocityY);
     }
