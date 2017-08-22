@@ -16,8 +16,9 @@ window.onload = function onLoad() {
     const gameBoard = createGameBoard(size);
     const paddle = createPaddle(gameBoard);
     const ball = createBall();
+    const player = createPlayer(gameBoard);
 
-    const game = createGame(gameBoard, paddle, ball);
+    const game = createGame(gameBoard, paddle, ball, player);
 
     const paddleController = createPaddleController(paddle, gameBoard);
     const ballController = createBallController(ball, paddle, gameBoard);
@@ -71,6 +72,7 @@ function drawGame(context, game) {
   drawGameBoard(context, game.board);
   drawPaddle(context, game.paddle);
   drawBall(context, game.ball);
+  drawPlayer(context, game.player);
 
   context.restore();
 }
@@ -106,12 +108,25 @@ function drawBall(context, ball) {
   context.restore();
 }
 
-function createGame(gameBoard, paddle, ball) {
+function drawPlayer(context, player) {
+    context.save();
+
+    context.font = player.font;
+    context.fillStyle = player.color;
+
+    context.fillText(`Score: ${player.score}`, 8, 20);
+    context.fillText(`Lives: ${player.lives}`, player.board.width - 65, 20);
+
+    context.restore();
+}
+
+function createGame(gameBoard, paddle, ball, player) {
   return {
     active: true,
     board: gameBoard,
     paddle: paddle,
-    ball: ball
+    ball: ball,
+    player: player
   };
 }
 
@@ -148,6 +163,16 @@ function createBall() {
       this.y = dy;
     }
   };
+}
+
+function createPlayer(gameBoard) {
+    return {
+      lives: 3,
+      score: 0,
+      color: "blue",
+      font: "16px Arial",
+      board: gameBoard
+    };
 }
 
 function createPaddleController(paddle, gameBoard) {
@@ -223,39 +248,3 @@ function createBallController(ball, paddle, gameBoard) {
     }
   }
 }
-
-/*
-,
-moveTo : function moveTo(dx, dy) {
-  this.x = dx;
-  this.y = dy;
-}
-
-color: "0095DD",
-font: "16px Arial",
-score: 0,
-lives: 3
-
-drawScore(context, game);
-drawLives(context, game);
-
-function drawScore(context, game) {
-  context.save();
-
-  context.font = game.font;
-  context.fillStyle = game.color;
-  context.fillText(`Score: ${game.score}`, 8, 20);
-
-  context.restore();
-}
-
-function drawLives(context, game) {
-  context.save();
-
-  context.font = game.font;
-  context.fillStyle = game.color;
-  context.fillText(`Lives: ${game.lives}`, game.board.width - 65, 20);
-
-  context.restore();
-}
-*/
