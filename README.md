@@ -26,3 +26,4 @@ I am creating tags for each lesson. checking out the code using the below tags w
 - **lesson 9** (tag: 9-board-collision) :: Discuss environment (ball and board) collision.
 - **lesson 10** (tag: 10-paddle-collision) :: Discuss object (ball and paddle) collision.
 - **lesson 11** (tag: 11-create-player) :: Create player, more object discussion.
+- **lesson 12** (tag: 12-game-state) :: Discuss application state, ball state, player lives.

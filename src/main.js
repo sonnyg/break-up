@@ -26,14 +26,22 @@ window.onload = function onLoad() {
     startGame();
 
     function startGame() {
+      resetGameBoard();
+      drawFrame();
+    }
+
+    function resetGameBoard() {
       paddleController.resetPaddle();
       ballController.resetBall();
-
-      drawFrame();
     }
 
     function drawFrame(timestamp) {
         if (game.active) {
+          if (ball.isDead) {
+              player.lives -= 1;
+              resetGameBoard();
+          }
+
           drawGame(context, game);
 
           ballController.moveBall();
@@ -102,7 +110,7 @@ function drawBall(context, ball) {
   context.arc(ball.x, ball.y, ball.radius, 0, 2 * Math.PI, false);
   context.closePath();
 
-  context.fillStyle = ball.color;
+  context.fillStyle = ball.isDead ? ball.deadColor : ball.color;
   context.fill();
 
   context.restore();
@@ -158,6 +166,8 @@ function createBall() {
     y: 0,
     radius: 20,
     color: "red",
+    isDead: false,
+    deadColor: "gray",
     moveTo : function moveTo(dx, dy) {
       this.x = dx;
       this.y = dy;
@@ -217,10 +227,11 @@ function createBallController(ball, paddle, gameBoard) {
       const board = this.board;
 
       // move ball to center of board
-      const ballX = board.width / 2 - ball.x;
-      const ballY = board.height / 2 - ball.y;
+      const ballX = board.width / 2 - ball.radius;
+      const ballY = board.height / 2 - ball.radius;
 
       ball.moveTo(ballX, ballY);
+      ball.isDead = false;
     },
     moveBall : function moveBall() {
       const ball = this.ball;
@@ -237,14 +248,14 @@ function createBallController(ball, paddle, gameBoard) {
       } else if ((ball.y - ball.radius) <= 0) {             // top side
         this.velocityY = -this.velocityY;
       } else if ((ball.y + ball.radius) >= board.height) {  // bottom side
-        console.trace("uh-oh! ball hit bottom of board");
-        this.velocityY = -this.velocityY;
+        ball.isDead = true;
       } else if (ballAbovePaddle && ballAtPaddleHeight) {   // ball hit paddle
-        console.trace("ball saved!");
         this.velocityY = -this.velocityY;
       }
 
-      ball.moveTo(ball.x + this.velocityX, ball.y + this.velocityY);
+      if (!ball.isDead) {
+        ball.moveTo(ball.x + this.velocityX, ball.y + this.velocityY);
+      }
     }
   }
 }
